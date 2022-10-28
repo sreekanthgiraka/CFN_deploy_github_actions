@@ -31,6 +31,6 @@ jobs:
       - name: Deploy to AWS CloudFormation
         uses: aws-actions/aws-cloudformation-github-deploy@v1
         with:
-          name: userdata-deploy
-          template: cf.yaml
+          name: ud
+          template: f.yaml
           no-fail-on-empty-changeset: "1"
