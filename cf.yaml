@@ -19,7 +19,7 @@ Resources:
       ImageId: ami-090fa75af13c156b4
       SecurityGroups:
        - !Ref InstanceSecurityGroup
-      
+      KeyName: sreekanth1
                 
 
       Tags:
