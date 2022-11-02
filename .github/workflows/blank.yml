@@ -24,8 +24,8 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          aws-access-key-id: AKIAVLODSIF4MME63QEQ
-          aws-secret-access-key: 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
+          aws-access-key-id: ${{ secrets.AWS_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_PASS}}
           aws-region: us-east-1
       # Deploy to AWS CloudFormation
       - name: Deploy to AWS CloudFormation
