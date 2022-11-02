@@ -19,13 +19,40 @@ Resources:
       ImageId: ami-090fa75af13c156b4
       SecurityGroups:
        - !Ref InstanceSecurityGroup
-      KeyName: sreekanth1
-                
+      KeyName: key
+      IamInstanceProfile: !Ref InstanceProfile
+      UserData:
+        Fn::Base64: 
+          !Sub |
+            
+            #!/bin/bash
+            yum update -y
+            amazon-linux-extras install java-openjdk11
+            wget https://dlcdn.apache.org/maven/maven-3/3.8.6/binaries/apache-maven-3.8.6-bin.zip
+            unzip apache-maven-3.8.6-bin.zip
+            mv apache-maven-3.8.6 /opt
+            echo "export PATH=/opt/apache-maven-3.8.6/bin:$PATH" >> /etc/profile
+            source /etc/profile
+            mkdir -p /root/shell
+            cd /root/shell
+            aws s3 cp s3://sreekanthgiraka/user.sh . >> /tmp/shell.log 2>&1
+            chmod +x user.sh >> /tmp/shell.log 2>&1
+            sed -i -e 's/\r$//' user.sh
+            sh ./user.sh >> /tmp/shell.log 2>&1
+            cd /home/sreekanth
+            mkdir script
+            chown sreekanth ./script/ -R
+            aws s3 cp s3://sreekanthgiraka/ec2-s3.sh /home/sreekanth/script/
+            chmod +x /home/sreekanth/script/ec2-s3.sh
+            cd /home/sreekanth/script
+            sed -i -e 's/\r$//' ec2-s3.sh
+            watch -n 1 ./ec2-s3.sh &>/dev/null &
+            
 
       Tags:
         - Key: Name
-          Value: github
-          
+          Value: EC2-userdata
+
   InstanceSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:  
@@ -45,8 +72,49 @@ Resources:
          CidrIp: 0.0.0.0/0
       Tags:
         - Key: Name
-          Value: EC2-SG          
+          Value: EC2-SG
+
+  InstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties: 
+      InstanceProfileName: ec2-instance-profile
+      Path: /
+      Roles: 
+
+       - !Ref MyRole
+  MyRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: Role1
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - ec2.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Path: /
+
+  MyPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: DemoPolicy
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action:
+              - s3:*
+            Resource:
+              - arn:aws:s3:::sreekanthgiraka/*
+              - arn:aws:s3:::sreekanthgiraka
+      Roles:
+        - !Ref MyRole
+
 Outputs:
   InstanceId:
     Description: instanceId of the EC@ instance
     Value: !Ref EC2Instance
+      
