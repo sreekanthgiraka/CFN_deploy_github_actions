@@ -108,8 +108,8 @@ Resources:
             Action:
               - s3:*
             Resource:
-              - arn:aws:s3:::sreekanthgiraka/*
-              - arn:aws:s3:::sreekanthgiraka
+              - arn:aws:s3:::sreekanthgiraka1/*
+              - arn:aws:s3:::sreekanthgiraka1
       Roles:
         - !Ref MyRole
 
