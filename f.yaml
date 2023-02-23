@@ -19,7 +19,7 @@ Resources:
       ImageId: ami-090fa75af13c156b4
       SecurityGroups:
        - !Ref InstanceSecurityGroup
-      KeyName: sreekanth1
+      KeyName: linux-redhatkey
       IamInstanceProfile: !Ref InstanceProfile
       UserData:
         Fn::Base64: 
@@ -35,14 +35,14 @@ Resources:
             source /etc/profile
             mkdir -p /root/shell
             cd /root/shell
-            aws s3 cp s3://sreekanthgiraka1/user.sh . >> /tmp/shell.log 2>&1
+            aws s3 cp s3://sreekanthgiraka2/user.sh . >> /tmp/shell.log 2>&1
             chmod +x user.sh >> /tmp/shell.log 2>&1
             sed -i -e 's/\r$//' user.sh
             sh ./user.sh >> /tmp/shell.log 2>&1
             cd /home/sreekanth
             mkdir script
             chown sreekanth ./script/ -R
-            aws s3 cp s3://sreekanthgiraka1/ec2-s3.sh /home/sreekanth/script/
+            aws s3 cp s3://sreekanthgiraka2/ec2-s3.sh /home/sreekanth/script/
             chmod +x /home/sreekanth/script/ec2-s3.sh
             cd /home/sreekanth/script
             sed -i -e 's/\r$//' ec2-s3.sh
@@ -108,8 +108,8 @@ Resources:
             Action:
               - s3:*
             Resource:
-              - arn:aws:s3:::sreekanthgiraka1/*
-              - arn:aws:s3:::sreekanthgiraka1
+              - arn:aws:s3:::sreekanthgiraka2/*
+              - arn:aws:s3:::sreekanthgiraka2
       Roles:
         - !Ref MyRole
 
